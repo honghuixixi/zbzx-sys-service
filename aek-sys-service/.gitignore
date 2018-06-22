@@ -1,0 +1,8 @@
+*.class
+
+jdbc.properties
+Spring-config.xml
+
+target/
+*.iml
+README.md

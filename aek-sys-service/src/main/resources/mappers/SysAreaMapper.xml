@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.sys.mapper.SysAreaMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="base_result" type="com.aek.ebey.sys.model.SysArea">
+		<id column="id" property="id" />
+		<result column="code" property="code" />
+		<result column="name" property="name" />
+		<result column="parent_id" property="parentId" />
+		<result column="name_py" property="namePy" />
+		<result column="level" property="level" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="base_columns">
+		id, code, name, parent_id AS parentId, name_py AS namePy,
+		level
+	</sql>
+
+	<select id="queryByIdAndLevel" resultMap="base_result">
+		select
+		<include refid="base_columns" />
+		from
+		sys_area t
+		where
+		t.id = #{areaId}
+		and
+		t.level = #{level}
+	</select>
+
+	<select id="queryByParentIdAndLevel" resultMap="base_result">
+		select
+		<include refid="base_columns" />
+		from
+		sys_area t
+		where
+		t.parent_id = #{parentId}
+		and
+		t.level = #{level}
+	</select>
+
+	<select id="queryByLevel" resultMap="base_result">
+		select
+		<include refid="base_columns" />
+		from
+		sys_area t
+		where
+		t.level = #{level}
+	</select>
+
+</mapper>

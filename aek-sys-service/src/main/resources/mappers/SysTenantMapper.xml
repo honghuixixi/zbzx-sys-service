@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.sys.mapper.SysTenantMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.sys.model.SysTenant">
+		<id column="id" property="id" />
+		<result column="name" property="name" />
+		<result column="license" property="license" />
+		<result column="license_img_url" property="licenseImgUrl" />
+		<result column="manage_tenant_id" property="manageTenantId" />
+		<result column="province" property="province" />
+		<result column="city" property="city" />
+		<result column="county" property="county" />
+		<result column="category" property="hplTenant.category" />
+		<result column="commercial_use" property="commercialUse" />
+		<result column="trial" property="trial" />
+		<result column="tenant_type" property="tenantType" />
+		<result column="economic_type" property="hplTenant.economicType" />
+		<result column="manage_type" property="hplTenant.manageType" />
+		<result column="sub_tenant_limit" property="subTenantLimit" />
+		<result column="sub_tenant" property="subTenant" />
+		<result column="user_limit" property="userLimit" />
+		<result column="expire_time" property="expireTime" />
+		<result column="logo" property="logo" />
+		<result column="origin" property="origin" />
+		<result column="audit_status" property="auditStatus" />
+		<result column="admin_id" property="adminId" />
+		<result column="parent_id" property="parentId" />
+		<result column="parent_ids" property="parentIds" />
+		<result column="notify" property="notify" />
+		<result column="token_max_expire" property="tokenMaxExpire" />
+		<result column="create_by" property="createBy" />
+		<result column="create_time" property="createTime" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_time" property="updateTime" />
+		<result column="enable" property="enable" />
+		<result column="del_flag" property="delFlag" />
+		<result column="custom_data" property="customData" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, name, license, license_img_url AS licenseImgUrl,
+		province, city,
+		manage_tenant_id AS manageTenantId,
+		county, category,
+		commercial_use AS commercialUse, trial, tenant_type
+		AS tenantType,
+		economic_type AS economicType, manage_type AS
+		manageType,
+		sub_tenant_limit AS subTenantLimit, sub_tenant AS
+		subTenant, user_limit
+		AS userLimit, expire_time AS expireTime, logo,
+		origin, audit_status AS
+		auditStatus, admin_id AS adminId, parent_id AS
+		parentId, parent_ids AS
+		parentIds, notify, token_max_expire AS
+		tokenMaxExpire, create_by AS
+		createBy, create_time AS createTime,
+		update_by AS updateBy, update_time
+		AS updateTime, enable, del_flag AS
+		delFlag
+	</sql>
+
+	<select id="getPage" resultMap="BaseResultMap">
+		select * from sys_tenant
+	</select>
+
+
+	<select id="selectByOrgCode" resultMap="BaseResultMap"
+		parameterType="string">
+		SELECT *
+		FROM sys_tenant
+		WHERE custom_data->'$.orgCode' = #{orgCode} AND del_flag = 0
+	</select>
+
+	<select id="selectExpiredTenant" resultMap="BaseResultMap" >
+		select * from sys_tenant where del_flag = false and enable = true and expire_time is not null and expire_time &lt;=now()
+	</select>
+	
+	<select id="selectExpiredTenantBetweenDate" resultMap="BaseResultMap">
+		select * from sys_tenant where del_flag = false and enable = true and expire_time is not null and expire_time &gt;#{beginDate} and expire_time &lt; #{endDate}
+	</select>
+	
+	<select id="findAllRoleSubTenant" resultType="com.aek.ebey.sys.model.vo.SysTenantRoleVo">
+		select id as tenantId,name as tenantName from sys_tenant where del_flag=false and enable=true and parent_ids like CONCAT(#{parentIds},',',#{tenantId},'%')
+	</select>
+	
+	<select id="getTenants" resultType="com.aek.ebey.sys.model.Tenants">
+		SELECT
+			id,
+			NAME,
+			tenant_type type
+		FROM
+			sys_tenant 
+		WHERE id IN	
+		<if test="tenantIds != null and tenantIds.length > 0">
+			<foreach collection="tenantIds" item="item" index="index" open="(" separator="," close=")">
+			#{item}
+			</foreach>
+		</if>	
+	</select>
+</mapper>

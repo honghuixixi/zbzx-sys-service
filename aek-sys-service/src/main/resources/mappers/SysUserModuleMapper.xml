@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.user_module.mapper.SysUserModuleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.sys.model.SysUserModule">
+		<id column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="module_id" property="moduleId" />
+		<result column="module_group" property="moduleGroup" />
+		<result column="module_order" property="moduleOrder" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id AS userId, module_id AS moduleId, module_group AS moduleGroup, module_order AS moduleOrder
+    </sql>
+</mapper>

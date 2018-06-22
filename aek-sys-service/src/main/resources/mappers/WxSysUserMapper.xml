@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.sys.mapper.WxSysUserMapper">
+
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.sys.model.WxSysUser">
+		<id column="id" property="id" />
+		<result column="user_id" property="userId" />
+		<result column="password" property="password"/>
+		<result column="open_id" property="openId" />
+		<result column="create_time" property="createTime" />
+	</resultMap>
+	
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id,password, open_id, create_time
+    </sql>
+    
+    <!-- 保存微信用户绑定关系 -->
+    <insert id="insertWxSysUser" parameterType="com.aek.ebey.sys.model.WxSysUser">
+    	insert into wx_sys_user(user_id,password,open_id,create_time) values(#{wxSysUser.userId},#{wxSysUser.password},#{wxSysUser.openId},now())
+    </insert>
+
+    <!-- 查询OpenId绑定的用户记录 -->
+    <select id="countWxSysUser" resultType="int" parameterType="java.lang.String">
+    	select count(*) from wx_sys_user where open_id=#{openId}
+    </select>
+    
+    <!-- 查询OpenID绑定用户 -->
+    <select id="selectWxSysUserByOpenId" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_Column_List"/>
+        from wx_sys_user where open_id=#{openId} limit 0,1
+    </select>
+    
+    <!-- 查询OpenID绑定用户 -->
+    <select id="selectWxSysUserByUserId" resultMap="BaseResultMap">
+    	select 
+    	<include refid="Base_Column_List"/>
+        from wx_sys_user where user_id=#{userId} limit 0,1
+    </select>
+    
+    <select id="getWxUserEnable" resultType="boolean">
+    	SELECT enable FROM wx_sys_user WHERE user_id=#{userId} AND open_id=#{openId}
+    </select>
+</mapper>

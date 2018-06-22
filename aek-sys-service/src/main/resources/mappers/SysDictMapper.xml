@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.sys.mapper.SysDictMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.sys.model.SysDict">
+		<id column="id" property="id" />
+		<result column="parent_id" property="parentId" />
+		<result column="code" property="code" />
+		<result column="text" property="text" />
+		<result column="value" property="value" />
+		<result column="sort" property="sort" />
+		<result column="add_by" property="addBy" />
+		<result column="enable" property="enable" />
+		<result column="del_flag" property="delFlag" />
+		<result column="remark" property="remark" />
+		<result column="tenant_id" property="tenantId" />
+		<result column="custom_data" property="customData" />
+	</resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, parent_id AS parentId, code, text, value, sort, add_by AS addBy, enable, del_flag AS delFlag, remark, tenant_id AS tenantId, custom_data AS customData
+    </sql>
+    
+    <select id="findListByParentCode" resultMap="BaseResultMap">
+    	select b.* from sys_dict a left join sys_dict b on a.id = b.parent_id
+    	where a.enable=true and b.enable=true and a.del_flag=false and b.del_flag=false
+    	and a.code=#{code}
+    	<if test="tenantId != null">
+    		and b.tenant_id is null or b.tenant_id = #{tenantId}
+    	</if>
+    	order by b.sort,b.id
+    </select>
+</mapper>

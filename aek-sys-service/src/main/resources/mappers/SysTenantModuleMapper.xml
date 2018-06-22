@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.sys.mapper.SysTenantModuleMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.sys.model.SysTenantModule">
+		<id column="id" property="id" />
+		<result column="tenant_id" property="tenantId" />
+		<result column="module_id" property="moduleId" />
+		<result column="name" property="name" />
+		<result column="version_number" property="versionNumber" />
+		<result column="module_type" property="moduleType" />
+		<result column="release_time" property="releaseTime" />
+		<result column="url" property="url" />
+		<result column="create_time" property="createTime" />
+		<result column="update_time" property="updateTime" />
+		<result column="enable" property="enable" />
+		<result column="del_flag" property="delFlag" />
+		<result column="module_source" property="moduleSource" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, tenant_id AS tenantId, module_id AS moduleId, name,
+		version_number AS versionNumber, module_type AS moduleType, release_time AS release_time, 
+		url, create_time AS createTime, update_time AS updateTime, enable, del_flag AS delFlag, module_source AS moduleSource
+	</sql>
+	
+	 
+    <!-- 根据角色查询角色涉及的模块信息 -->
+    <select id="selectModuleByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+    	SELECT
+			tm.id,
+			tm.tenant_id,
+			tm.module_id,
+			tm.name,
+			tm.version_number,
+			tm.enable,
+			tm.del_flag
+		FROM
+			sys_tenant_module tm
+		WHERE
+			tm.del_flag = FALSE
+			AND tm.`enable` = true
+			AND tm.tenant_id IN (
+				SELECT
+					tm.tenant_id
+				FROM
+					sys_tenant_module tm
+				LEFT JOIN sys_role_permission sp ON tm.module_id = sp.module_id
+				WHERE
+					sp.role_id = #{roleId}
+				AND tm.tenant_id = sp.tenant_id
+				AND tm.del_flag = FALSE
+			    AND tm.`enable` = true
+				GROUP BY
+					tm.tenant_id
+			)
+		AND tm.module_id IN (
+			SELECT
+				tm.module_id
+			FROM
+				sys_tenant_module tm
+			LEFT JOIN sys_role_permission sp ON tm.module_id = sp.module_id
+			WHERE
+				sp.role_id = #{roleId}
+			AND tm.tenant_id = sp.tenant_id
+			AND tm.del_flag = FALSE
+			AND tm.`enable` = true
+			GROUP BY
+				tm.module_id
+		)
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aek.ebey.base.mapper.BaseFieldMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap" type="com.aek.ebey.sys.model.BaseField">
+		<id column="id" property="id" />
+		<result column="field_category_id" property="fieldCategoryId" />
+		<result column="chinese_name" property="chineseName" />
+		<result column="english_name" property="englishName" />
+		<result column="field_type" property="fieldType" />
+		<result column="validate_rule" property="validateRule" />
+		<result column="error_message" property="errorMessage" />
+		<result column="manage_type" property="manageType" />
+		<result column="required_flag" property="requiredFlag" />
+		<result column="del_flag" property="delFlag" />
+		<result column="enable" property="enable" />
+		<result column="create_by" property="createBy" />
+		<result column="create_date" property="createDate" />
+		<result column="update_by" property="updateBy" />
+		<result column="update_date" property="updateDate" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="BaseColumnList">
+
+	</sql>
+	
+</mapper>
